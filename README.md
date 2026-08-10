@@ -4,8 +4,9 @@ This repository is the local Branch Context root for `go-sharpen-blade`.
 Shared BC behavior comes from the authoritative Branch Context guidance; the
 local instructions are in [`AGENTS.md`](AGENTS.md).
 
-No workflow lanes are initialized yet. Add lanes only when the work requires
-them, using the standard BC lane structure.
+Workflow lanes are added only when the work requires them, using the standard
+BC lane structure. The current active BC is
+[`interview/dsa`](_active/interview/dsa/).
 
 Approved explicit plans are stored inside the individual BC that owns them,
 using a `plans/` subdirectory and the next available three-digit filename
