@@ -16,6 +16,8 @@ to question-bearing plans. The first interview question will be plan `002`.
   difficulty.
 - Store future questions as `plans/NNN-<neutral-slug>.md`, with answers under
   `internal/interview/dsa/<difficulty>/NNN-<neutral-slug>/`.
+- When implementing an issued question plan, create its matching empty answer
+  directory. Do not create any Go files, APIs, or tests at that stage.
 - Start concept coverage from scratch at question `002`; ignore all older
   repository exercises.
 - Keep an after-evaluation concept ledger in `STATE.md`. Never record the
@@ -30,8 +32,8 @@ to question-bearing plans. The first interview question will be plan `002`.
   - Optional pseudocode examples only when they clarify behavior without
     suggesting a data structure or algorithm.
 - Do not include solution hints, key concepts, technique-oriented titles or
-  slugs, target complexity, Go signatures, scaffolding, tests, implementation
-  steps, or answers.
+  slugs, target complexity, Go signatures, Go scaffolding, tests,
+  implementation steps, or answers.
 - Prefer concepts not yet represented in the post-evaluation ledger so the new
   series develops broad coverage.
 - On an evaluation turn, review without editing: run relevant tests and assess
@@ -51,6 +53,8 @@ to question-bearing plans. The first interview question will be plan `002`.
   coverage ledger starts empty.
 - Verify the BC documents contain the exact easy/medium/hard terminology and
   spoiler restrictions.
+- For each issued question, confirm its declared answer path exists and has no
+  agent-created Go source or test files.
 - Run `git -C .context diff --check` and report the separate BC repository
   status.
 
