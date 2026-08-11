@@ -24,8 +24,13 @@ not count as prior coverage and do not constrain question selection.
   `internal/interview/dsa/<difficulty>/NNN-<neutral-slug>/`, using the exact
   same number and slug as the plan.
 - When implementing an issued question plan, create that exact answer
-  directory. It is the only product-tree setup created while issuing a
-  question.
+  directory, then create exactly one implementation source file and one test
+  source file inside it:
+  - `<lowerCamelSlug>.go`
+  - `<lowerCamelSlug>_test.go`
+  Use an all-lowercase valid Go package name formed from the neutral slug with
+  separators removed. For example, `badge-scan` uses `badgeScan.go`,
+  `badgeScan_test.go`, and `package badgescan`.
 - Number new question plans monotonically using the next available
   three-digit number. Do not renumber or overwrite existing plans.
 
@@ -38,10 +43,10 @@ only the material needed to understand the prompt:
 - optional input/output examples written as neutral pseudocode, but only when
   they clarify behavior without suggesting a solution
 
-The developer owns API design, implementation, and tests. Apart from the
-required empty answer directory, do not create a Go signature, package files,
-starter implementation, test cases, implementation steps, or acceptance
-checklist when issuing a question.
+The developer owns API design, implementation, and tests. The two required Go
+files initially contain only their matching package declaration. Do not create
+a Go signature, starter implementation, test cases, implementation steps, or
+acceptance checklist when issuing a question.
 
 ## Spoiler policy
 

@@ -16,8 +16,13 @@ to question-bearing plans. The first interview question will be plan `002`.
   difficulty.
 - Store future questions as `plans/NNN-<neutral-slug>.md`, with answers under
   `internal/interview/dsa/<difficulty>/NNN-<neutral-slug>/`.
-- When implementing an issued question plan, create its matching empty answer
-  directory. Do not create any Go files, APIs, or tests at that stage.
+- When implementing an issued question plan, create its matching answer
+  directory, then exactly two Go files: `<lowerCamelSlug>.go` and
+  `<lowerCamelSlug>_test.go`. Both initially contain only an all-lowercase,
+  valid package declaration derived from the neutral slug with separators
+  removed; for example, `badge-scan` uses `badgeScan.go`,
+  `badgeScan_test.go`, and `package badgescan`. Do not create any API,
+  implementation, or test cases at that stage.
 - Start concept coverage from scratch at question `002`; ignore all older
   repository exercises.
 - Keep an after-evaluation concept ledger in `STATE.md`. Never record the
@@ -31,9 +36,9 @@ to question-bearing plans. The first interview question will be plan `002`.
   - A self-contained problem statement and inherent constraints.
   - Optional pseudocode examples only when they clarify behavior without
     suggesting a data structure or algorithm.
-- Do not include solution hints, key concepts, technique-oriented titles or
-  slugs, target complexity, Go signatures, Go scaffolding, tests,
-  implementation steps, or answers.
+- Do not include in the question prompt solution hints, key concepts,
+  technique-oriented titles or slugs, target complexity, Go signatures, APIs,
+  starter implementations, test cases, implementation steps, or answers.
 - Prefer concepts not yet represented in the post-evaluation ledger so the new
   series develops broad coverage.
 - On an evaluation turn, review without editing: run relevant tests and assess
@@ -53,8 +58,9 @@ to question-bearing plans. The first interview question will be plan `002`.
   coverage ledger starts empty.
 - Verify the BC documents contain the exact easy/medium/hard terminology and
   spoiler restrictions.
-- For each issued question, confirm its declared answer path exists and has no
-  agent-created Go source or test files.
+- For each issued question, confirm its declared answer path contains exactly
+  the required implementation and test Go files, each with the matching
+  package declaration and no API, implementation, or test cases.
 - Run `git -C .context diff --check` and report the separate BC repository
   status.
 
