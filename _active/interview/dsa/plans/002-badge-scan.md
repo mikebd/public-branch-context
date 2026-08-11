@@ -26,3 +26,10 @@ indicate that no repeated badge exists.
 Return the first repeated badge ID together with the zero-based position of the
 scan where that repeat occurs. If no badge ID repeats, indicate that no
 repeated badge exists and do not provide a position.
+
+## Follow-up 2
+
+Return the first repeated badge ID, the zero-based position of its repeated
+scan, and the zero-based position where that same badge ID was first scanned.
+If no badge ID repeats, indicate that no repeated badge exists and do not
+provide either position.

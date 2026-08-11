@@ -9,12 +9,14 @@ Current question: `002-badge-scan`
 
 - Administrative setup is captured in
   `plans/001-initialize-dsa-interview-workflow.md`.
-- Question `002-badge-scan` has an `easy` follow-up evaluated.
+- Question `002-badge-scan` has an additional `easy` follow-up evaluated.
 - The review found correct earliest-repeat behavior for ordinary badge IDs;
   focused tests pass. The current implementation distinguishes a repeated
   empty badge ID from no repeated badge.
 - The follow-up correctly returns the zero-based repeat position with the
   repeated badge and uses the presence result for the no-repeat case.
+- The second follow-up correctly returns both the original and repeat scan
+  positions for the first repeated badge.
 
 ## Question ledger
 
@@ -23,7 +25,7 @@ but leave its concepts undisclosed until the answer has been evaluated.
 
 | Plan | Difficulty | Status | Answer path | Concepts after evaluation | Strengths and gaps |
 | --- | --- | --- | --- | --- | --- |
-| 002 | easy | follow-up-evaluated | `internal/interview/dsa/easy/002-badge-scan/` | single-pass scan; prior-value membership; positional result | Correct earliest-repeat behavior, no-result signaling, empty-ID coverage, and zero-based positions; add an explicit case-sensitivity test. |
+| 002 | easy | follow-up-evaluated | `internal/interview/dsa/easy/002-badge-scan/` | single-pass scan; prior-value membership; first-occurrence positions | Correct earliest-repeat behavior, no-result signaling, empty-ID coverage, case-sensitive matching, and both zero-based positions. |
 
 Statuses progress as applicable through `issued`, `evaluated`,
 `follow-up-issued`, and `follow-up-evaluated`.
