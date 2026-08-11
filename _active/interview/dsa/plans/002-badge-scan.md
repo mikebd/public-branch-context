@@ -20,3 +20,9 @@ indicate that no repeated badge exists.
 [A12, B07, A12, B07] -> A12
 [A12, B07] -> no repeated badge
 ```
+
+## Follow-up
+
+Return the first repeated badge ID together with the zero-based position of the
+scan where that repeat occurs. If no badge ID repeats, indicate that no
+repeated badge exists and do not provide a position.
