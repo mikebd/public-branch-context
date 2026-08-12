@@ -2,8 +2,8 @@
 
 Updated: 2026-08-11
 Status: active
-Next plan number: `005`
-Current question: `004-gate-log`
+Next plan number: `006`
+Current question: `005-carton-limit`
 
 ## Current state
 
@@ -23,6 +23,9 @@ Current question: `004-gate-log`
 - Question `004-gate-log` has been evaluated at the `easy` difficulty.
 - The implementation correctly validates matching event order and rejects
   premature, unsupported, and unclosed events.
+- Question `005-carton-limit` has been evaluated at the `easy` difficulty.
+- The implementation correctly respects distinct-carton selection, including
+  duplicate and zero-weight cartons.
 
 ## Question ledger
 
@@ -34,6 +37,7 @@ but leave its concepts undisclosed until the answer has been evaluated.
 | 002 | easy | follow-up-evaluated | `internal/interview/dsa/easy/002-badge-scan/` | single-pass scan; prior-value membership; first-occurrence positions | Correct earliest-repeat behavior, no-result signaling, empty-ID coverage, case-sensitive matching, and both zero-based positions. |
 | 003 | easy | evaluated | `internal/interview/dsa/easy/003-label-check/` | character normalization; mirrored-sequence comparison | Correct punctuation, case, digit, and even/odd mirrored-label handling; optionally add a rejected digit-containing case. |
 | 004 | easy | evaluated | `internal/interview/dsa/easy/004-gate-log/` | nested event matching | Correct matching-order, invalid-character, and unmatched-entry handling; optionally add a direct `([)]` case. |
+| 005 | easy | evaluated | `internal/interview/dsa/easy/005-carton-limit/` | value counting; pair search | Correct distinct-carton, duplicate, zero, and over-limit handling; consider simplifying the nested distinct-weight scan. |
 
 Statuses progress as applicable through `issued`, `evaluated`,
 `follow-up-issued`, and `follow-up-evaluated`.
