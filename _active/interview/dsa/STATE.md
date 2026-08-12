@@ -2,8 +2,8 @@
 
 Updated: 2026-08-11
 Status: active
-Next plan number: `004`
-Current question: `003-label-check`
+Next plan number: `005`
+Current question: `004-gate-log`
 
 ## Current state
 
@@ -20,6 +20,9 @@ Current question: `003-label-check`
 - Question `003-label-check` has been evaluated at the `easy` difficulty.
 - The implementation correctly normalizes printable ASCII labels and accepts
   both even- and odd-length mirrored content.
+- Question `004-gate-log` has been evaluated at the `easy` difficulty.
+- The implementation correctly validates matching event order and rejects
+  premature, unsupported, and unclosed events.
 
 ## Question ledger
 
@@ -30,6 +33,7 @@ but leave its concepts undisclosed until the answer has been evaluated.
 | --- | --- | --- | --- | --- | --- |
 | 002 | easy | follow-up-evaluated | `internal/interview/dsa/easy/002-badge-scan/` | single-pass scan; prior-value membership; first-occurrence positions | Correct earliest-repeat behavior, no-result signaling, empty-ID coverage, case-sensitive matching, and both zero-based positions. |
 | 003 | easy | evaluated | `internal/interview/dsa/easy/003-label-check/` | character normalization; mirrored-sequence comparison | Correct punctuation, case, digit, and even/odd mirrored-label handling; optionally add a rejected digit-containing case. |
+| 004 | easy | evaluated | `internal/interview/dsa/easy/004-gate-log/` | nested event matching | Correct matching-order, invalid-character, and unmatched-entry handling; optionally add a direct `([)]` case. |
 
 Statuses progress as applicable through `issued`, `evaluated`,
 `follow-up-issued`, and `follow-up-evaluated`.
