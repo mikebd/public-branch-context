@@ -43,8 +43,8 @@
   sourcing a Bash configuration fragment during normal execution.
 - Parent: none.
 - Depends on: WP-001.
-- Status: planned.
-- Plans: none.
+- Status: complete.
+- Plans: [002-codex-runtime-and-toml-configuration.md](plans/002-codex-runtime-and-toml-configuration.md).
 - Scope: Python scripts repository only; Python 3.13+ and Linux remain the
   supported baseline.
 
@@ -156,3 +156,7 @@
 - 2026-08-17: Completed WP-001. `make all` passed (Ruff, Pyright, and 49
   pytest tests); `uv run ai-agent-launcher --help` and `--version` passed,
   with the installed command reporting `0.1.0`.
+- 2026-08-18: Started WP-002 and captured its implementation plan at
+  `plans/002-codex-runtime-and-toml-configuration.md`.
+- 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
+  pytest tests); the installed command's help and version smoke tests passed.
