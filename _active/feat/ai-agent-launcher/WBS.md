@@ -62,8 +62,8 @@
   adapter-owned preparation path; it never guesses consumer policy.
 - Parent: none.
 - Depends on: WP-001, WP-002.
-- Status: planned.
-- Plans: none.
+- Status: complete.
+- Plans: [003-versioned-launcher-lifecycle-and-codex-migration.md](plans/003-versioned-launcher-lifecycle-and-codex-migration.md).
 - Scope: Python scripts repository only; existing consumer launchers are not
   migrated by this package.
 
@@ -158,5 +158,12 @@
   with the installed command reporting `0.1.0`.
 - 2026-08-18: Started WP-002 and captured its implementation plan at
   `plans/002-codex-runtime-and-toml-configuration.md`.
+- 2026-08-18: Completed WP-003. Versioned POSIX-shell launchers, neutral
+  lifecycle orchestration, the Codex session adapter, and explicit legacy
+  migration are covered by synthetic Git, executable, and JSONL tests.
+  `make all` passed (73 tests), and the installed CLI exposed the launcher and
+  migration command groups.
 - 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
   pytest tests); the installed command's help and version smoke tests passed.
+- 2026-08-18: Started WP-003 and captured its approved implementation plan at
+  `plans/003-versioned-launcher-lifecycle-and-codex-migration.md`.

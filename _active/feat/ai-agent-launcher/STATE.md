@@ -3,8 +3,8 @@
 ## Current status
 
 Active as of 2026-08-18. The product branch and active BC lane use
-`feat/ai-agent-launcher`; the product branch is published. WP-001 is complete
-and WP-002 is complete.
+`feat/ai-agent-launcher`; the product branch is published. WP-001, WP-002,
+and WP-003 are complete.
 
 ## Evidence
 
@@ -18,7 +18,10 @@ and WP-002 is complete.
   read-only internal session metadata discovery. It deliberately defers
   worktree lifecycle and generated launchers. `make all` passed (66 tests),
   and `uv run ai-agent-launcher --help` plus `--version` passed.
+- WP-003 adds versioned generated launchers, lifecycle management, and explicit
+  Codex migration while deferring Git worktree creation and stacking. `make
+  all` passed with 73 tests; launcher and migration CLI help were checked.
 
 ## Next decision gates
 
-1. Plan WP-003, the versioned launcher lifecycle and explicit Codex migration.
+1. Plan WP-004 when Git worktree creation and stacking parity are authorized.
