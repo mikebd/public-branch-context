@@ -79,8 +79,8 @@
   add-directory, and parent-mismatch behavior.
 - Parent: none.
 - Depends on: WP-002, WP-003.
-- Status: planned.
-- Plans: none.
+- Status: complete.
+- Plans: [004-neutral-worktree-creation-and-stacking.md](plans/004-neutral-worktree-creation-and-stacking.md).
 - Scope: Python scripts repository only; no Bash or consumer adapter edits.
 
 ### WP-005 — Parity verification, tagged distribution, and public guidance
@@ -163,6 +163,11 @@
   migration are covered by synthetic Git, executable, and JSONL tests.
   `make all` passed (73 tests), and the installed CLI exposed the launcher and
   migration command groups.
+- 2026-08-19: Started WP-004 and captured its implementation plan at
+  `plans/004-neutral-worktree-creation-and-stacking.md`.
+- 2026-08-21: Completed WP-004. Neutral worktree creation and strict stacking
+  retain the accepted branch, start-ref, collision, rollback, unpinned
+  launcher, and source-HEAD behavior. `make all` passed with 83 tests.
 - 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
   pytest tests); the installed command's help and version smoke tests passed.
 - 2026-08-18: Started WP-003 and captured its approved implementation plan at
