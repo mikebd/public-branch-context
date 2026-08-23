@@ -9,8 +9,8 @@
   owns agent CLI arguments, writable-directory mechanics, and session
   semantics.
 - The first release is distributed as a versioned Git tag through `uv tool
-  install`, not PyPI. It migrates legacy Codex configuration and launchers
-  only through explicit user commands.
+  install`, not PyPI. Legacy Codex configuration and launcher migration is not
+  part of the released interface.
 - This WBS is flat. Its first delivery creates this file only; it authorizes
   no product, adapter, documentation, or follow-up BC changes by itself.
 
@@ -86,28 +86,32 @@
 ### WP-005 — Parity verification, tagged distribution, and public guidance
 
 - Outcome: Automated contract coverage and public documentation make a tagged
-  `ai-agent-launcher` release reproducible from this repository or a fork.
-- Acceptance: Tests use temporary Git repositories, fake Codex executables,
-  synthetic session JSONL, and a fake adapter to prove core/adapter separation
-  and legacy behavior parity. Validation covers pytest, Ruff, Pyright, package
-  build, and a clean tagged `uv tool install` smoke test. Documentation shows
-  upstream and fork Git-tag installation, tag/version creation, PATH setup,
-  selected-tag upgrades, and the absence of PyPI publication.
+  `ai-agent-launcher` release reproducible from this repository or a fork,
+  without shipping legacy migration behavior.
+- Acceptance: The three current local launchers are manually recreated and
+  privately verified before legacy migration code is removed. Tests use
+  temporary Git repositories, fake Codex executables, synthetic session JSONL,
+  and a fake adapter to prove core/adapter separation and legacy runtime
+  parity. Validation covers pytest, Ruff, Pyright, package build, and a clean
+  tagged `uv tool install` smoke test. Documentation shows upstream and fork
+  Git-tag installation, tag/version creation, PATH setup, selected-tag
+  upgrades, and the absence of PyPI publication.
 - Parent: none.
 - Depends on: WP-001, WP-002, WP-003, WP-004.
-- Status: planned.
-- Plans: none.
+- Status: in progress.
+- Plans: [005-release-hardening-and-v0.1.0-tag.md](plans/005-release-hardening-and-v0.1.0-tag.md).
 - Scope: Python scripts repository only; user-facing documentation remains
   Branch-Context agnostic.
 
 ### WP-006 — Buds migration BC handoff
 
 - Outcome: A receiving Branch Context in the Buds `_todo` lane frames its
-  future adapter, configuration, generated-launcher, and documentation
-  migration from the released Python core.
+  future launcher policy and consumer documentation from the released Python
+  core.
 - Acceptance: After resolving the receiving BC root, create only customary
-  `CONTEXT.md` and `STATE.md` for the migration lane. Do not create a product
-  branch, edit Buds files, or migrate user launchers in this package.
+  `CONTEXT.md` and `STATE.md` for the handoff lane. Record that the current
+  local launcher replacements were completed during WP-005; do not create a
+  product branch or edit Buds files in this package.
 - Parent: none.
 - Depends on: WP-005.
 - Status: planned.
@@ -117,11 +121,12 @@
 ### WP-007 — Sharpen Blade migration BC handoff
 
 - Outcome: A receiving Branch Context in the sharpen-blade `_todo` lane frames
-  its future adapter, configuration, generated-launcher, and documentation
-  migration from the released Python core.
+  its future launcher policy and consumer documentation from the released
+  Python core.
 - Acceptance: After resolving the receiving BC root, create only customary
-  `CONTEXT.md` and `STATE.md` for the migration lane. Do not create a product
-  branch, edit sharpen-blade files, or migrate user launchers in this package.
+  `CONTEXT.md` and `STATE.md` for the handoff lane. Record that the current
+  local launcher replacement was completed during WP-005; do not create a
+  product branch or edit sharpen-blade files in this package.
 - Parent: none.
 - Depends on: WP-005.
 - Status: planned.
@@ -168,6 +173,15 @@
 - 2026-08-21: Completed WP-004. Neutral worktree creation and strict stacking
   retain the accepted branch, start-ref, collision, rollback, unpinned
   launcher, and source-HEAD behavior. `make all` passed with 83 tests.
+- 2026-08-22: Started WP-005 and captured its approved release-hardening plan.
+  WP-005 now owns one-time private replacement of the three current local
+  launchers before removal of the released migration surface. WP-006 and
+  WP-007 remain planned, narrowed to consumer policy and documentation.
+- 2026-08-22: Completed WP-005's local cutover and release-candidate
+  validation. The three local legacy launchers were privately backed up and
+  recreated; two retained pinned sessions and one remained unpinned. `make
+  release-check` passed with 82 tests, a source build, and isolated temporary
+  Git-tag installation. Public tag publication remains the final WP-005 gate.
 - 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
   pytest tests); the installed command's help and version smoke tests passed.
 - 2026-08-18: Started WP-003 and captured its approved implementation plan at

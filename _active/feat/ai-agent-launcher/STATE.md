@@ -2,9 +2,9 @@
 
 ## Current status
 
-Active as of 2026-08-18. The product branch and active BC lane use
-`feat/ai-agent-launcher`; the product branch is published. WP-001, WP-002,
-WP-003, and WP-004 are complete.
+Active as of 2026-08-22. The product branch and active BC lane use
+`feat/ai-agent-launcher`; the product branch is published. WP-001 through
+WP-004 are complete; WP-005 is in progress.
 
 ## Evidence
 
@@ -25,8 +25,23 @@ WP-003, and WP-004 are complete.
   launcher-directory configuration, preflight collision checks, and owned
   rollback. `make all` passed with 83 tests; the installed worktree CLI help
   was checked.
+- WP-005 has completed the one-time private replacement of the three legacy
+  local launchers, preserving two pinned sessions and one unpinned launcher.
+  Its release candidate removes the migration surface, moves launcher-run
+  rendering into the runtime adapter, adds release guidance, and passes `make
+  release-check` (Ruff, Pyright, 84 tests, source build, and isolated temporary
+  Git-tag installation).
+- WP-005 also updates package metadata to the current PEP 621/SPDX form,
+  preserves `LICENSE` in distributions, and removes the deprecated license
+  classifier. `make release-check` completes without setuptools metadata
+  deprecation notices.
+- Fake adapter contract coverage now includes generic session fork and adoption
+  delegation, generated target metadata, and cross-worktree adoption rejection.
+- Public documentation now describes testing the current untagged checkout and
+  an isolated local tool installation that leaves the normal launcher intact.
 
 ## Next decision gates
 
-1. Plan WP-005 when parity verification, tagged distribution, and public
-   guidance are authorized.
+1. Complete WP-005: review and commit the release candidate, push it, create
+   and push annotated `v0.1.0`, then run an isolated smoke test against the
+   public tag and record evidence.
