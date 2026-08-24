@@ -2,9 +2,9 @@
 
 ## Current status
 
-Active as of 2026-08-22. The product branch and active BC lane use
+Active as of 2026-08-23. The product branch and active BC lane use
 `feat/ai-agent-launcher`; the product branch is published. WP-001 through
-WP-004 are complete; WP-005 is in progress.
+WP-004 and WP-009 are complete; WP-005 is in progress.
 
 ## Evidence
 
@@ -39,6 +39,20 @@ WP-004 are complete; WP-005 is in progress.
   delegation, generated target metadata, and cross-worktree adoption rejection.
 - Public documentation now describes testing the current untagged checkout and
   an isolated local tool installation that leaves the normal launcher intact.
+- WP-009 captures static completion generation from the existing `argparse`
+  parser. It uses `shtab` for bash, fish, tcsh, and zsh, detects `$SHELL` only
+  when no explicit shell is selected, and leaves completion installation to
+  the user.
+- WP-009 is complete. `make all` and `make release-check` passed with 96
+  pytest tests, and the generated zsh script passed `zsh -n`.
+- Plan 007 is complete and intentionally unassociated with a WBS work
+  package. It establishes repository ADR guidance and records the accepted
+  static shell-completion decision without changing completion behavior.
+  `git diff --check` and `make all` passed with 96 pytest tests.
+- Plan 008 is complete and intentionally unassociated with a WBS work
+  package. It corrects ADR framing before the first ADR commit without
+  changing product behavior. `git diff --check` and `make all` passed with 96
+  pytest tests.
 
 ## Next decision gates
 

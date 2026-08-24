@@ -151,6 +151,21 @@
 - Scope: Handoff artifact only; no Bash-script removal or compatibility change
   occurs here.
 
+### WP-009 — Static shell completion
+
+- Outcome: `ai-agent-launcher` emits static shell completion from its existing
+  `argparse` interface for bash, fish, tcsh, and zsh.
+- Acceptance: `completion` accepts an explicit supported shell or derives one
+  from `$SHELL`; generated scripts expose the current CLI hierarchy. The
+  command writes only to stdout, and public documentation explains
+  user-managed activation without modifying shell configuration.
+- Parent: none.
+- Depends on: WP-001.
+- Status: complete.
+- Plans: [006-static-shell-completion.md](plans/006-static-shell-completion.md).
+- Scope: Python scripts repository only; no shell configuration, adapter, or
+  consumer repository changes.
+
 ## History
 
 - 2026-08-17: Created as the approved WBS-first delivery map. It records the
@@ -182,6 +197,11 @@
   recreated; two retained pinned sessions and one remained unpinned. `make
   release-check` passed with 82 tests, a source build, and isolated temporary
   Git-tag installation. Public tag publication remains the final WP-005 gate.
+- 2026-08-23: Started WP-009 and captured its approved completion plan. It
+  adds static parser-derived completion for bash, fish, tcsh, and zsh without
+  writing shell configuration.
+- 2026-08-23: Completed WP-009. `make all` and `make release-check` passed
+  with 96 pytest tests, and the generated zsh script passed `zsh -n`.
 - 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
   pytest tests); the installed command's help and version smoke tests passed.
 - 2026-08-18: Started WP-003 and captured its approved implementation plan at
