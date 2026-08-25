@@ -57,6 +57,10 @@ WP-004 and WP-009 are complete; WP-005 is in progress.
   package. It establishes scoped `ai-agent-launcher` decision records and
   nested guidance while keeping `docs/adr/` repository-wide. `git diff
   --check` and `make all` passed with 97 pytest tests.
+- Plan 010 is complete and intentionally unassociated with a WBS work
+  package. It separates direct untagged-checkout CLI smoke tests from the
+  installed PATH contract for persistent launchers. `git diff --check`,
+  `make all`, and `make release-check` passed with 97 pytest tests.
 
 ## Next decision gates
 
