@@ -54,9 +54,8 @@ Bash Scripts no longer contains a Codex launcher implementation. Its generic
 Git worktree-link engine has a direct dependency only on the reusable `lib/`
 requirement API, and downstream repositories can adopt that API independently.
 
-## Activation
+## Completion
 
-This active context is reserved for the intended product branch
-`chore/codex-launcher-deprecation`. No WBS or implementation plan is created:
-capture an explicit implementation plan only when the product change is
-authorized.
+This completed context records delivery on product branch
+`chore/codex-launcher-deprecation`. No WBS was created; the approved and
+implemented plan is captured in `plans/001-codex-launcher-deprecation.md`.
