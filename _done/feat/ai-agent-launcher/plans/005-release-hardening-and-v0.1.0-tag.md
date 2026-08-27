@@ -1,6 +1,6 @@
 # WP-005: Release hardening and v0.1.0 tag
 
-Status: in progress
+Status: complete
 
 ## Outcome
 
@@ -52,8 +52,9 @@ repository artifacts.
 - `make release-check` passes: Ruff, Pyright, 82 pytest tests, `uv build
   --no-sources`, and an isolated `uv tool install` smoke test from a temporary
   Git tag.
-- Pending: review, product commit and push, annotated public `v0.1.0` tag push,
-  and an isolated smoke test against that public tag.
+- The reviewed product is merged to `main`; annotated `v0.1.0` points to
+  `f0291bf`, and an isolated public-tag installation reports version `0.1.0`
+  with the `ai-agent-launcher` executable.
 
 ## Amendments
 

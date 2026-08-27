@@ -98,7 +98,7 @@
   upgrades, and the absence of PyPI publication.
 - Parent: none.
 - Depends on: WP-001, WP-002, WP-003, WP-004.
-- Status: in progress.
+- Status: complete.
 - Plans: [005-release-hardening-and-v0.1.0-tag.md](plans/005-release-hardening-and-v0.1.0-tag.md).
 - Scope: Python scripts repository only; user-facing documentation remains
   Branch-Context agnostic.
@@ -202,6 +202,14 @@
   writing shell configuration.
 - 2026-08-23: Completed WP-009. `make all` and `make release-check` passed
   with 96 pytest tests, and the generated zsh script passed `zsh -n`.
+- 2026-08-26: Completed WP-005 release publication. The product is merged to
+  `main`, annotated `v0.1.0` points to `f0291bf`, and the public-tag install
+  smoke test passed.
+- 2026-08-26: Reviewed Sharpen Blade commit `238463d`, which removes its
+  repository-local Codex launcher assistance and lifecycle tests while keeping
+  generic worktree-link support. Record this as downstream legacy-launcher
+  removal evidence, not as adoption of the Python launcher; WP-007 remains a
+  planned receiving-BC handoff if future consumer policy is needed.
 - 2026-08-18: Completed WP-002. `make all` passed (Ruff, Pyright, and 66
   pytest tests); the installed command's help and version smoke tests passed.
 - 2026-08-18: Started WP-003 and captured its approved implementation plan at

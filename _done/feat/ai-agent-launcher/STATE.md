@@ -2,9 +2,10 @@
 
 ## Current status
 
-Active as of 2026-08-23. The product branch and active BC lane use
-`feat/ai-agent-launcher`; the product branch is published. WP-001 through
-WP-004 and WP-009 are complete; WP-005 is in progress.
+Done as of 2026-08-26. The product is on `main` and the annotated `v0.1.0`
+tag is published. WP-001 through WP-005 and WP-009 are complete; WP-006 and
+WP-007 remain planned downstream handoffs, while WP-008 remains blocked on
+their completion evidence.
 
 ## Evidence
 
@@ -61,9 +62,18 @@ WP-004 and WP-009 are complete; WP-005 is in progress.
   package. It separates direct untagged-checkout CLI smoke tests from the
   installed PATH contract for persistent launchers. `git diff --check`,
   `make all`, and `make release-check` passed with 97 pytest tests.
+- 2026-08-26: WP-005 release completion is recorded by the annotated
+  `v0.1.0` tag on `main` (`f0291bf`) and public-tag installation verification
+  reporting `mikebd-py-scripts==0.1.0` with the `ai-agent-launcher` executable.
+- 2026-08-26: Reviewed Sharpen Blade commit `238463d` (`chore(dx): remove
+  Codex launcher assistance`). It removes the repository-local Codex launcher
+  wrappers, session helpers, migration-era tests, and their README guidance,
+  while retaining generic worktree-link support. This confirms downstream
+  legacy-launcher removal, not adoption of `ai-agent-launcher`; no product or
+  Sharpen Blade files were changed from this BC.
 
 ## Next decision gates
 
-1. Complete WP-005: review and commit the release candidate, push it, create
-   and push annotated `v0.1.0`, then run an isolated smoke test against the
-   public tag and record evidence.
+1. If downstream consumer work resumes, use the planned WP-006 or WP-007
+   receiving BC for consumer-specific policy and documentation. Keep WP-008
+   blocked until both handoffs provide completion evidence.
