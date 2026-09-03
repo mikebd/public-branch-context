@@ -20,3 +20,5 @@ _active/feat/feature-name/plans/001-brief-plan-summary.md
 This applies only to decision-complete plans produced in explicit Plan Mode
 and approved for implementation. Plans formed implicitly during ordinary
 execution are not captured here.
+
+This branch is part of the [public Branch Context catalog](https://github.com/mikebd/public-branch-context/blob/main/README.md).
