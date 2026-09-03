@@ -1,9 +1,10 @@
 # State — feat/claude
 
-Status as of 2026-09-03: twelve commits, pushed. PR #1 open and mergeable,
-three CodeRabbit review rounds addressed and all nine threads resolved. The last
-two commits came from outside review entirely -- a config-alignment check and a
-teammate's macOS attempt -- and found more than the third review round did.
+Status as of 2026-09-03: thirteen commits, pushed. PR #1 open and mergeable,
+four CodeRabbit review rounds addressed and all eleven threads resolved. Two of
+the thirteen commits came from outside review entirely -- a config-alignment
+check and a teammate's macOS attempt -- and together found more than any single
+review round did.
 
 ```
 b0394b4 chore: normalize home-path style and drop a hardcoded home path
@@ -18,6 +19,7 @@ e5e1a08 fix(codex): honor CODEX_HOME in the madsense-local-backend-auth commands
 1d02432 fix(claude): apply Claude Code's real matcher rules in the hook probe
 17e26ba fix(claude): make the allowlist match what the RTK hook actually produces
 7aecd41 fix(claude): treat RTK as optional and catch a pin that no longer resolves
+82a0380 fix(claude): test matcher regex with node instead of Python's re
 ```
 
 ## Verified findings (2026-09-02, Linux x86_64, rtk 0.45.0)
@@ -129,20 +131,50 @@ running things for real; three by review.
    working hook as absent, so the guard failed closed. That is the opposite of
    defects 1 and 3, which reported a broken setup as fine.
 
-   The pattern across all five is one thing, and it is not carelessness about
+6. And the fix for 5 was incomplete too, structurally rather than by a slipped
+   rule this time. Claude Code evaluates a matcher as a **JavaScript** regular
+   expression; Python's `re` is not that engine. `(?<tool>Bash)` is a valid JS
+   named group and a live Bash registration, but Python uses `(?P<name>...)`
+   instead and raises `re.error`, which `matches_bash` caught and turned into a
+   silent `False`. Confirmed directly with node, not inferred:
+   `re.search(r'(?<tool>Bash)', 'Bash')` raises; `new RegExp('(?<tool>Bash)').test('Bash')`
+   returns `true`.
+
+   Checked whether the divergence was wider before fixing only the reported
+   case. `\p{L}` Unicode property escapes looked like a second candidate and
+   turned out not to be one: they need JavaScript's `u` flag to behave as
+   escapes, and Claude Code's matcher never sets flags, so `\p{L}` fails
+   identically in both engines. That agreement is a coincidence of this one
+   construct, not evidence the two engines agree in general — worth recording
+   so a future session does not read it as a closed question.
+
+   Fixed in `82a0380` by shelling out to `node`, when present, and testing the
+   pattern with the real `RegExp` constructor — arguments passed via `argv`,
+   never interpolated into a script string, since the pattern is untrusted
+   `settings.json` content. Node is a safe assumption: it ships with Claude
+   Code itself. Without node, falls back to `re`, now documented as an
+   approximation rather than equivalence.
+
+   The pattern across all six is one thing, and it is not carelessness about
    any individual check. Each fix asserted the property the previous defect had
    violated, and stopped there. Defect 3 replaced "does a file exist" with "is
    there a PreToolUse entry" — a better question, still not the real one.
    Defect 4 added "under a Bash matcher" without asking what Claude Code means
-   by a matcher. The real property, stated in full: *Claude Code will run
+   by a matcher. Defect 5 answered that, in Python, for an engine that is not
+   Python's. The real property, stated in full: *Claude Code will run
    `rtk hook claude` on a Bash tool call, from a path it can resolve without
-   help.* Every clause of that has now been a defect. The habit worth keeping
-   is to write the property out before testing any part of it.
+   help, tested the way Claude Code itself tests it.* Every clause has now been
+   a defect. The habit worth keeping is to write the property out before
+   testing any part of it — and to ask, of each clause, what engine actually
+   evaluates it.
 
-   `claude/scripts/rtk-hook-probe-test.py` (added `1d02432`, 19 stdlib tests)
-   now pins the whole sentence. It was checked against the pre-fix code rather
-   than assumed to work: reverting `matches_bash` fails exactly the two cases
-   that round was about.
+   `claude/scripts/rtk-hook-probe-test.py` (added `1d02432`, extended `82a0380`,
+   25 stdlib tests) pins the whole sentence, including a test that the
+   node-unavailable path returns "could not check" rather than misreporting it
+   as "does not match" — skipped, not faked, when node is absent. Checked
+   against the pre-fix code each time rather than assumed to work: reverting
+   `matches_bash` at any stage fails exactly the cases that stage was about,
+   and nothing else.
 
 ## The hook and the allowlist are not independent
 
@@ -193,6 +225,15 @@ silent-failure mode; deleted 2026-09-03. `~/.claude/settings.json.bak`
 (`theme` only) is the genuine pre-install state and was kept — an earlier note
 here recorded the first file without mentioning that a clean one also existed.
 
+## Fourth review round
+
+2026-09-03. Two findings, one of them the defect above and the other trivial:
+an MD038 trailing space inside a code span in `README.md`, which turned out to
+also be present in `claude/EXECUTION_MODEL.md` from the same edit two commits
+earlier. Fixed both rather than leave the second for a fifth round -- the kind
+of thing worth a quick grep across the file whenever a review names one
+instance of a pattern introduced in a recent commit.
+
 ## macOS: attempted, and what the attempt was worth
 
 2026-09-03. A teammate ran `./claude/scripts/rtk-install.sh --dry-run` on macOS
@@ -239,6 +280,19 @@ python3 claude/scripts/rtk-hook-probe-test.py    # expect 22 tests, OK
 rtk hook check 'npx playwright test'             # expect rtk playwright test
 ls ~/.claude/settings.json.*.bak                 # restore, or rtk init -g --uninstall
 ```
+
+## Where a check has to reproduce another program's behaviour, run that program
+
+The generalisable lesson from defect 6, stated once so it does not have to be
+re-derived from the six-defect list above. A check that reimplements another
+program's decision procedure in a different language is only as good as the
+reimplementation, and "different language" can mean genuinely different
+semantics, not just syntax to port. `re` and `RegExp` share enough surface to
+look interchangeable and diverge on named-group syntax, Unicode property
+escapes, and almost certainly more that has not been found yet. Where the real
+program is reachable -- here, `node` ships with Claude Code -- prefer running it
+over modelling it, and treat the modelled fallback as an approximation in the
+documentation, not a quiet second implementation of the same claim.
 
 ## Comment alignment
 
