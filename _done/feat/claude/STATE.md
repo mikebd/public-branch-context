@@ -1,7 +1,9 @@
 # State — feat/claude
 
-Status as of 2026-09-03: ten commits, pushed. PR #1 open and mergeable, three
-CodeRabbit review rounds addressed and all nine threads resolved.
+Status as of 2026-09-03: eleven commits, pushed. PR #1 open and mergeable,
+three CodeRabbit review rounds addressed and all nine threads resolved. The
+eleventh commit came from a config-alignment review, not from CodeRabbit, and
+found the largest defect of the branch.
 
 ```
 b0394b4 chore: normalize home-path style and drop a hardcoded home path
@@ -14,6 +16,7 @@ e509136 fix(claude): tighten RTK hook detection and drop installs from the allow
 e5e1a08 fix(codex): honor CODEX_HOME in the madsense-local-backend-auth commands
 9191020 fix(claude): require a Bash matcher and an absolute path in the hook check
 1d02432 fix(claude): apply Claude Code's real matcher rules in the hook probe
+17e26ba fix(claude): make the allowlist match what the RTK hook actually produces
 ```
 
 ## Verified findings (2026-09-02, Linux x86_64, rtk 0.45.0)
@@ -140,6 +143,55 @@ running things for real; three by review.
    than assumed to work: reverting `matches_bash` fails exactly the two cases
    that round was about.
 
+## The hook and the allowlist are not independent
+
+Found 2026-09-03 by asking whether this machine's config matched the repo, and
+the most consequential defect on the branch: `settings.json.example` was largely
+inert for precisely the users who followed the Claude setup here.
+
+`rtk hook claude` returns the rewritten command as `updatedInput`, and Claude
+Code evaluates `PreToolUse` hooks *before* the permission decision. Permission
+rules therefore match the rewritten string. Established by feeding the hook a
+real PreToolUse payload rather than reading the docs and inferring: the reply
+carries `updatedInput` and no `permissionDecision`, so the hook rewrites without
+approving anything, and the allowlist then sees `rtk git status` where the rule
+said `git status`.
+
+14 of 18 baseline rules and 4 of 7 opt-in rules never fired. Two rewrites are
+worth remembering: `npx playwright test` -> `rtk playwright test` drops the
+`npx`, while `npx cypress run` keeps it. `git merge`, `git rebase`, `npm test`
+and `ng test` are not rewritten at all. Table is rtk 0.45.0; an upgrade that
+changes a rewrite turns a working rule into a dead one with no error.
+
+Fixed in `17e26ba` by listing both forms, so the example behaves the same with
+or without the hook.
+
+**The sharper half.** `*` spans spaces, so a single `Bash(rtk git *)` covers
+`rtk git commit` and `rtk git push`. That silently removes the manual-review
+hold that `EXECUTION_MODEL.md` says the permission prompt *is*. Not
+hypothetical: it was the state of `.claude/settings.local.json` on this machine,
+alongside a `Bash(gh pr *)` rule that was simultaneously inert (never matched
+`rtk gh pr view`) and over-broad (would have covered `gh pr create` and
+`gh pr merge` had it matched). Both replaced with per-subcommand rules in both
+forms.
+
+This is the same failure mode as the unpinned hook and the false all-clear
+guard, one layer up: a control that reads as present and does nothing. Three of
+them now, in three different mechanisms.
+
+## Machine state
+
+`~/.claude/LOCAL-MACHINE.md` was created 2026-09-03 and now holds the
+machine-local facts previously scattered through this file: rtk's Linuxbrew path
+and why the pin matters, the guard's python3 requirement, the rewrite-before-
+permissions interaction, and which `settings.json` backup is which.
+
+The misleading backup is gone. `settings.json.20260902220159.bak` held the
+hook with the bare unpinned command, so restoring it would have reinstated the
+silent-failure mode; deleted 2026-09-03. `~/.claude/settings.json.bak`
+(`theme` only) is the genuine pre-install state and was kept — an earlier note
+here recorded the first file without mentioning that a clean one also existed.
+
 ## Open items
 
 - **macOS validation — the main one.** Nothing here has run on macOS, where the
@@ -183,9 +235,11 @@ running things for real; three by review.
   genericising the line — name the repository so a reader can go get it, and
   demote the absolute path to the author's local default. Out of scope for this
   branch; small enough to fold into whichever branch next touches that doc.
-- **This machine's `~/.claude/settings.json.<ts>.bak`** was written by the
-  pre-`5d74f75` code, so it holds the post-`rtk init` state. `rtk init -g
-  --uninstall` is the reliable removal path.
+- **Rewrite table drift.** The raw/rtk rule pairs in `settings.json.example`
+  are correct for rtk 0.45.0 and were verified by running the hook. Nothing
+  re-checks them, so an rtk upgrade that changes a rewrite silently retires a
+  rule. A test comparing `rtk hook check` output against the example would
+  catch it; not written.
 
 ## Handoff
 
