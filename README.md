@@ -54,9 +54,10 @@ The branch links above are stable. The practice-example links are not, and the
 reason is structural: a lane directory is part of a BC's path, and a lane is
 workflow state. A BC in `_active`, `_todo`, `_hold`, `_deferred`, `_research`,
 or `_idea` moves when its work does, so a deep link into one of those lanes
-stops resolving as soon as the BC is promoted, paused, or completed. Links into
-`_done` and the persistent `__`-prefixed lanes are stable in practice, because
-those lanes are where a BC comes to rest.
+stops resolving as soon as the BC is promoted, paused, completed, or rejected.
+Links into `_done` and `_rejected` are stable in practice because those lanes
+hold terminal outcomes, and links into the persistent `__`-prefixed lanes are
+stable by design.
 
 Each catalogued BC that currently sits in a workflow-state lane carries a
 follow-up item to update this table when its lane changes, so a transition
