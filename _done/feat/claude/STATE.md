@@ -1,7 +1,7 @@
 # State — feat/claude
 
-Status as of 2026-09-03: eight commits, pushed. PR #1 open and mergeable, one
-CodeRabbit review round addressed and all five threads resolved.
+Status as of 2026-09-03: nine commits, pushed. PR #1 open and mergeable, two
+CodeRabbit review rounds addressed and all eight threads resolved.
 
 ```
 b0394b4 chore: normalize home-path style and drop a hardcoded home path
@@ -12,6 +12,7 @@ aacfc7c refactor(rmar): make the runtime contract agent-neutral and add Claude C
 5d74f75 fix(rtk): back up settings.json before the first mutation, not the last
 e509136 fix(claude): tighten RTK hook detection and drop installs from the allowlist
 e5e1a08 fix(codex): honor CODEX_HOME in the madsense-local-backend-auth commands
+9191020 fix(claude): require a Bash matcher and an absolute path in the hook check
 ```
 
 ## Verified findings (2026-09-02, Linux x86_64, rtk 0.45.0)
@@ -50,6 +51,11 @@ via `CLAUDE_CONFIG_DIR`, and treated BC as sourced-but-not-enabled pending root
 resolution. Hook confirmed firing: a plain `git status` recorded as
 `rtk git status`.
 
+**A Claude Code hook matcher is a regex against the tool name.** An absent,
+empty, or `*` matcher selects every tool; `Bash|Edit` selects Bash. Checking for
+the exact string `Bash` would reject valid hand-edited registrations, so the
+probe applies the matcher as a pattern.
+
 **rtk installs no hook script of its own** (rtk 0.45.0). `rtk init -g
 --hook-only --auto-patch` writes the `hooks.PreToolUse` registration into
 `settings.json` and nothing else — there is no `<agent-home>/hooks/` directory
@@ -60,11 +66,11 @@ hook will fire, which is what makes the third defect below a defect.
 Entries mix working directories and sessions; a line there is not evidence
 about the current workspace. A session misread one this way.
 
-## Three defects in the guard/install pair
+## Four defects in the guard/install pair
 
-All three survived tests that asserted on file *contents* or on a script's own
+All four survived tests that asserted on file *contents* or on a script's own
 shape, rather than on the behaviour the artifact exists for. Two were found by
-running things for real; the third by review.
+running things for real; two by review.
 
 1. `rtk-guard.sh` matched `@RTK.md` with `grep -qE '^\s*@...'`. `\s` is a GNU
    extension; on macOS the pattern never matches, so the script would report
@@ -95,6 +101,21 @@ running things for real; the third by review.
    `settings.json`, stray `rtk` text with no hook, bare registration, pinned
    registration plus a duplicate `RTK.md`, and this machine's real config. The
    no-Python fallback was checked separately against the three parseable ones.
+4. The fix for 3 was itself incomplete, and the second review round found both
+   gaps. The probe read `hooks.PreToolUse` without looking at each entry's
+   `matcher`, so a hook registered for another tool counted as installed even
+   though it never sees a shell command. And `pinned` was decided by basename,
+   which accepted `./rtk` and `bin/rtk` — paths that resolve against a working
+   directory the hook cannot predict, so no less fragile than the bare name.
+   Fixed in `9191020`; both now verified across twelve settings files.
+
+   The pattern across all four is one thing, and it is not carelessness about
+   any individual check. Each fix asserted the property the previous defect
+   had violated, and stopped there. Defect 3 replaced "does a file exist" with
+   "is there a PreToolUse entry" — a better question that still was not the
+   real one, which is "will Claude Code run this on a Bash command, from a
+   path it can resolve". The useful habit is to state the property the artifact
+   exists to guarantee, in full, before testing any part of it.
 
 ## Open items
 
@@ -153,6 +174,9 @@ exits 0 — and now means something, per defect 3.
 working in it; this BC is the one they will find. It stays in `_done`: the work
 is complete and the path is referenced from PR #1.
 
-Next action is the PR itself — CodeRabbit was re-reviewing at last check, and
-macOS validation above remains the one open item that matters before the repo
-goes to the team.
+The guard now requires python3 and has no grep fallback — worth knowing before
+running it on a machine that lacks one, where it reports "cannot verify" and
+exits 1 by design rather than by failure.
+
+Next action is the PR itself. Two review rounds are closed and macOS validation
+above remains the one open item that matters before the repo goes to the team.

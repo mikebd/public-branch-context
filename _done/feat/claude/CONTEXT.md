@@ -44,12 +44,22 @@ lifecycle scripts; `pip install` and `uv pip install` take an agent-chosen
 source), the cost of the prompt is one approval per session, and installs are
 rarely in the inner loop. They move to a labelled opt-in section in
 `claude/EXECUTION_MODEL.md` with the hazard stated, since JSON has no comment
-syntax to hold the warning in the example file itself. `uv lock` stays in the
-baseline by explicit decision: it resolves rather than installs.
+syntax to hold the warning in the example file itself.
 
 This is the same shape as the `git commit` / `git push` decision above — the
 example file is not obliged to pre-authorize everything the contract knows how
 to scope.
+
+*Amended 2026-09-03, same day.* `uv lock` was moved into the baseline by
+explicit decision — it resolves rather than installs — and then moved back out
+when a second review round named the mechanism: resolution needs each
+candidate's metadata, and a dependency published without a wheel or static
+metadata forces uv to build its source distribution to read it, running that
+package's PEP 517 backend. The baseline now pre-authorizes no package operation
+of any kind. Recorded rather than quietly corrected because the first decision
+was reasoned, not careless, and the thing that changed was the evidence: the
+question to ask of a candidate is not "does it install?" but "can it execute
+code from the index?"
 
 **Absolute paths in bootstrap files.** Tilde expansion depends on the reader
 performing it and is not guaranteed across surfaces.
