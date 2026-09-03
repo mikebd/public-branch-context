@@ -8,3 +8,5 @@ This branch contains the Branch Context for the AI agent skills repository.
 
 - [Branch Context guidance](https://github.com/mikebd/ai-agent-skills/tree/main/shared/references/branch-context)
 - [AI agent skills repository](https://github.com/mikebd/ai-agent-skills)
+
+This branch is part of the [public Branch Context catalog](https://github.com/mikebd/public-branch-context/blob/main/README.md).
