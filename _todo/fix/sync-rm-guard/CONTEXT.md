@@ -65,3 +65,20 @@ lines. Decide before implementing; do not do both in sequence.
 - Both scripts are public. Keep them bash 3.2 clean and shellcheck clean, as
   the rest of the repository's scripts are.
 - Branch off `main`, not `feat/claude`.
+
+## Lane transitions
+
+The lane directory is part of this BC's path, so every link that reaches it by
+path breaks when the lane changes — which it will, since this BC exists to be
+started. Before or with any move out of `_todo`, update:
+
+- The reciprocal `Next BC` link in
+  [`_done/feat/claude/STATE.md`](../../../_done/feat/claude/STATE.md), which
+  points at `_todo/fix/sync-rm-guard/CONTEXT.md`.
+- The `ai-agent-skills-context` row in the [public Branch Context
+  catalog](https://github.com/mikebd/public-branch-context/blob/main/README.md),
+  if its practice-example link points into this lane. Recheck rather than
+  assume: the branch is not in that table yet.
+
+This branch's [`README.md`](../../../README.md) names no lane and needs no
+change.
