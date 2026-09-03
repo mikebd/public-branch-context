@@ -99,3 +99,15 @@ The follow-up:
 Update `STATE.md` when the follow-up is issued and again after its answer is
 evaluated. A follow-up may intentionally deepen an already covered concept;
 the unseen-concept preference applies to newly numbered questions.
+
+## Lane transitions
+
+The lane directory is part of this BC's path, so every link that reaches it by
+path breaks when the lane changes. Before or with any move out of `_active`,
+update both inbound links:
+
+- [`README.md`](../../../README.md) at this branch root, which names
+  `_active/interview/dsa/` as the current active BC.
+- The `go-sharpen-blade-context` row in the [public Branch Context
+  catalog](https://github.com/mikebd/public-branch-context/blob/main/README.md),
+  whose practice-example link points into this lane.
