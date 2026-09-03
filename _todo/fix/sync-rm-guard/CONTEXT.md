@@ -77,8 +77,7 @@ started. Before or with any move out of `_todo`, update:
   points at `_todo/fix/sync-rm-guard/CONTEXT.md`.
 - The `ai-agent-skills-context` row in the [public Branch Context
   catalog](https://github.com/mikebd/public-branch-context/blob/main/README.md),
-  if its practice-example link points into this lane. Recheck rather than
-  assume: the branch is not in that table yet.
+  whose practice-example cell links this lane alongside `_done/feat/claude`.
 
 This branch's [`README.md`](../../../README.md) names no lane and needs no
 change.
