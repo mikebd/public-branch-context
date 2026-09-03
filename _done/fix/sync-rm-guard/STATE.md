@@ -1,7 +1,32 @@
 # State — fix/sync-rm-guard
 
-Status as of 2026-09-03: **not started.** No branch, no commits. Carried over
-from `_done/feat/claude`, where it was found and scoped out.
+Status as of 2026-09-03: **implemented, pending review/commit.** Branch
+`fix/sync-rm-guard` checked out off `main`. Carried over from
+`_done/feat/claude`, where it was found and scoped out.
+
+## Resolution
+
+Applied the recommended stronger fix (remove-and-recreate) to both scripts,
+identically:
+
+```diff
+-  rm -rf "${target_dir}"/*
++  rm -rf "${target_dir:?}"
++  mkdir -p "${target_dir}"
+   cp -a "${source_dir}/." "${target_dir}/"
+```
+
+Verified:
+
+- `shellcheck` clean on both scripts (no SC2115 or other findings).
+- Exercised the no-`rsync` fallback for both scripts against scratch
+  directories with a `PATH` containing no `rsync`: stale target contents
+  (including a stale subdirectory) were fully replaced by source contents,
+  dotfiles included.
+- Confirmed `rm -rf "${target_dir:?}"` aborts (`parameter not set`, nonzero
+  exit) when `target_dir` is empty, rather than deleting.
+
+Not yet committed — holding per commit/push controls.
 
 ## Findings so far
 

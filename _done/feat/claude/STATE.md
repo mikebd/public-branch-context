@@ -331,10 +331,11 @@ but remains the likely explanation for ragged output elsewhere.
   on its own branch before the repo goes to the team, at which point this entry
   becomes history.
 
-  Next BC: [`_todo/fix/sync-rm-guard`](../../../_todo/fix/sync-rm-guard/CONTEXT.md),
-  created 2026-09-03 to carry it. It also records a second-order bug found while
-  scoping: the fallback does not match dotfiles, so it is not equivalent to the
-  `rsync --delete` branch it substitutes for.
+  Next BC: [`_done/fix/sync-rm-guard`](../../../_done/fix/sync-rm-guard/CONTEXT.md),
+  created 2026-09-03 to carry it, implemented and moved to `_done` on the same
+  date. It also records a second-order bug found while scoping: the fallback
+  does not match dotfiles, so it is not equivalent to the `rsync --delete`
+  branch it substitutes for.
 - **`AI_AGENT_LAUNCHER.md:48`** points launcher candidate 3 at
   `~/src/mikebd/py/scripts`, which resolves to nothing in `ai-agent-skills` and
   is unplaceable for a reader outside this machine — the line reads as though it
