@@ -47,6 +47,22 @@ representative BC path when more detail is useful.
 This list is intentionally curated rather than exhaustive. The public
 repository and each branch remain the source of truth for additional context.
 
+### Link stability
+
+The branch links above are stable. The practice-example links are not, and the
+reason is structural: a lane directory is part of a BC's path, and a lane is
+workflow state. A BC in `_active`, `_todo`, `_hold`, `_deferred`, `_research`,
+or `_idea` moves when its work does, so a deep link into one of those lanes
+stops resolving as soon as the BC is promoted, paused, or completed. Links into
+`_done` and the persistent `__`-prefixed lanes are stable in practice, because
+those lanes are where a BC comes to rest.
+
+Each catalogued BC that currently sits in a workflow-state lane carries a
+follow-up item to update this table when its lane changes, so a transition
+should normally reach here with the link. If a practice-example link does 404,
+follow the branch link in the same row and browse its lane directories: the BC
+has moved, not disappeared.
+
 ## Reading a public BC
 
 For orientation, read the branch README first. Then read the relevant
