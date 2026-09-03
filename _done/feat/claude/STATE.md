@@ -1,7 +1,7 @@
 # State — feat/claude
 
-Status as of 2026-09-03: nine commits, pushed. PR #1 open and mergeable, two
-CodeRabbit review rounds addressed and all eight threads resolved.
+Status as of 2026-09-03: ten commits, pushed. PR #1 open and mergeable, three
+CodeRabbit review rounds addressed and all nine threads resolved.
 
 ```
 b0394b4 chore: normalize home-path style and drop a hardcoded home path
@@ -13,6 +13,7 @@ aacfc7c refactor(rmar): make the runtime contract agent-neutral and add Claude C
 e509136 fix(claude): tighten RTK hook detection and drop installs from the allowlist
 e5e1a08 fix(codex): honor CODEX_HOME in the madsense-local-backend-auth commands
 9191020 fix(claude): require a Bash matcher and an absolute path in the hook check
+1d02432 fix(claude): apply Claude Code's real matcher rules in the hook probe
 ```
 
 ## Verified findings (2026-09-02, Linux x86_64, rtk 0.45.0)
@@ -51,10 +52,12 @@ via `CLAUDE_CONFIG_DIR`, and treated BC as sourced-but-not-enabled pending root
 resolution. Hook confirmed firing: a plain `git status` recorded as
 `rtk git status`.
 
-**A Claude Code hook matcher is a regex against the tool name.** An absent,
-empty, or `*` matcher selects every tool; `Bash|Edit` selects Bash. Checking for
-the exact string `Bash` would reject valid hand-edited registrations, so the
-probe applies the matcher as a pattern.
+**A Claude Code hook matcher is read three different ways**, decided by the
+characters in it. `*`, empty and absent match every tool. Only letters, digits,
+`_`, `-`, spaces, `,` and `|`: an exact name, or a list split on `|` or `,`.
+Anything else: an unanchored JavaScript regex. The unanchored part is the trap —
+`ash.*` is a valid Bash registration. Source is Claude Code's hooks reference;
+comma separators need v2.1.191+, hyphens in the exact set v2.1.195+.
 
 **rtk installs no hook script of its own** (rtk 0.45.0). `rtk init -g
 --hook-only --auto-patch` writes the `hooks.PreToolUse` registration into
@@ -66,11 +69,11 @@ hook will fire, which is what makes the third defect below a defect.
 Entries mix working directories and sessions; a line there is not evidence
 about the current workspace. A session misread one this way.
 
-## Four defects in the guard/install pair
+## Five defects in the guard/install pair
 
-All four survived tests that asserted on file *contents* or on a script's own
+All five survived tests that asserted on file *contents* or on a script's own
 shape, rather than on the behaviour the artifact exists for. Two were found by
-running things for real; two by review.
+running things for real; three by review.
 
 1. `rtk-guard.sh` matched `@RTK.md` with `grep -qE '^\s*@...'`. `\s` is a GNU
    extension; on macOS the pattern never matches, so the script would report
@@ -109,13 +112,33 @@ running things for real; two by review.
    directory the hook cannot predict, so no less fragile than the bare name.
    Fixed in `9191020`; both now verified across twelve settings files.
 
-   The pattern across all four is one thing, and it is not carelessness about
-   any individual check. Each fix asserted the property the previous defect
-   had violated, and stopped there. Defect 3 replaced "does a file exist" with
-   "is there a PreToolUse entry" — a better question that still was not the
-   real one, which is "will Claude Code run this on a Bash command, from a
-   path it can resolve". The useful habit is to state the property the artifact
-   exists to guarantee, in full, before testing any part of it.
+5. And the fix for 4 was also incomplete. `matches_bash` tested the matcher
+   with `re.fullmatch`, which is neither of the two rules Claude Code uses. Its
+   documented behaviour, verified against the hooks reference rather than
+   assumed: `*`, empty and absent matchers fire on every tool; a matcher of only
+   letters, digits, `_`, `-`, spaces, `,` and `|` is an exact name or a list
+   split on `|` or `,`; anything else is an **unanchored** JavaScript regex. So
+   `Edit, Bash` and `ash.*` are both live registrations that `fullmatch`
+   reported as missing. Fixed in `1d02432`.
+
+   Direction matters here and was benign: every one of these errors reported a
+   working hook as absent, so the guard failed closed. That is the opposite of
+   defects 1 and 3, which reported a broken setup as fine.
+
+   The pattern across all five is one thing, and it is not carelessness about
+   any individual check. Each fix asserted the property the previous defect had
+   violated, and stopped there. Defect 3 replaced "does a file exist" with "is
+   there a PreToolUse entry" — a better question, still not the real one.
+   Defect 4 added "under a Bash matcher" without asking what Claude Code means
+   by a matcher. The real property, stated in full: *Claude Code will run
+   `rtk hook claude` on a Bash tool call, from a path it can resolve without
+   help.* Every clause of that has now been a defect. The habit worth keeping
+   is to write the property out before testing any part of it.
+
+   `claude/scripts/rtk-hook-probe-test.py` (added `1d02432`, 19 stdlib tests)
+   now pins the whole sentence. It was checked against the pre-fix code rather
+   than assumed to work: reverting `matches_bash` fails exactly the two cases
+   that round was about.
 
 ## Open items
 
