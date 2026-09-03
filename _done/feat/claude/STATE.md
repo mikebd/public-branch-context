@@ -1,9 +1,9 @@
 # State — feat/claude
 
-Status as of 2026-09-03: eleven commits, pushed. PR #1 open and mergeable,
-three CodeRabbit review rounds addressed and all nine threads resolved. The
-eleventh commit came from a config-alignment review, not from CodeRabbit, and
-found the largest defect of the branch.
+Status as of 2026-09-03: twelve commits, pushed. PR #1 open and mergeable,
+three CodeRabbit review rounds addressed and all nine threads resolved. The last
+two commits came from outside review entirely -- a config-alignment check and a
+teammate's macOS attempt -- and found more than the third review round did.
 
 ```
 b0394b4 chore: normalize home-path style and drop a hardcoded home path
@@ -17,6 +17,7 @@ e5e1a08 fix(codex): honor CODEX_HOME in the madsense-local-backend-auth commands
 9191020 fix(claude): require a Bash matcher and an absolute path in the hook check
 1d02432 fix(claude): apply Claude Code's real matcher rules in the hook probe
 17e26ba fix(claude): make the allowlist match what the RTK hook actually produces
+7aecd41 fix(claude): treat RTK as optional and catch a pin that no longer resolves
 ```
 
 ## Verified findings (2026-09-02, Linux x86_64, rtk 0.45.0)
@@ -192,12 +193,74 @@ silent-failure mode; deleted 2026-09-03. `~/.claude/settings.json.bak`
 (`theme` only) is the genuine pre-install state and was kept — an earlier note
 here recorded the first file without mentioning that a clean one also existed.
 
+## macOS: attempted, and what the attempt was worth
+
+2026-09-03. A teammate ran `./claude/scripts/rtk-install.sh --dry-run` on macOS
+and got `rtk not found on PATH`. That validated lines 17-42 of 136 -- the
+`env bash` shebang under bash 3.2, `set -euo pipefail`, the argument loop, and
+the not-found path exiting cleanly -- and nothing that was actually at risk.
+Still untested on macOS: BSD `grep -qE` against the POSIX classes at lines 58
+and 97 (the `3f07eff` fix), bash 3.2 pattern substitution at 95 and 109, the
+backup ordering (`5d74f75`, only runs on a real install), `python3` presence,
+and `rtk-guard.sh` and `rtk-hook-probe.py` in their entirety. Nor the case the
+pin exists for: Apple Silicon Homebrew at `/opt/homebrew/bin`.
+
+The attempt was still worth more than the run. It produced three defects, none
+of which a reader of the diff would have found:
+
+1. **RTK was never documented as optional.** The teammate had to ask whether
+   they were expected to install it. Grep confirmed: "optional" appeared against
+   the allowlist, BC and skill packages, never against rtk.
+2. **The guard punished opting out.** No rtk, no hook -> exit 1 with an install
+   instruction, which reads as a broken setup rather than a supported choice.
+3. **The not-found message pointed at a URL** when rtk is in homebrew-core.
+   `brew install rtk` would have unblocked them immediately.
+
+And a fourth, found while testing the fix for 2: a hook pinned to a path that no
+longer exists was reported as correct. Homebrew moves `/usr/local` ->
+`/opt/homebrew` between Intel and Apple Silicon, and uninstalling rtk leaves the
+registration behind. Sixth instance of the branch's signature failure. Fixed in
+`7aecd41`.
+
+The generalisable part: the run failed in the first quarter of the script and
+therefore proved almost nothing about the code, but putting the script in front
+of someone who had not set the machine up exposed every assumption the setup had
+baked in. Those are different kinds of evidence and only one of them was the
+stated goal.
+
+**Paste-ready for a real macOS run**, since rtk is `brew install`-able:
+
+```bash
+brew install rtk
+claude/scripts/rtk-install.sh --dry-run          # expect rtk: /opt/homebrew/bin/rtk
+claude/scripts/rtk-install.sh
+claude/scripts/rtk-guard.sh; echo "exit=$?"      # expect 0
+python3 claude/scripts/rtk-hook-probe-test.py    # expect 22 tests, OK
+rtk hook check 'npx playwright test'             # expect rtk playwright test
+ls ~/.claude/settings.json.*.bak                 # restore, or rtk init -g --uninstall
+```
+
+## Comment alignment
+
+Column-padded trailing comments are not used in this repo's scripts or docs.
+Explanation goes on its own line above the code. Two instances were removed in
+`7aecd41`: a `#` padded to align inside a double-quoted shell string, where it
+is literal text rather than a comment and the padding pushed the line's real
+trailing token out of alignment to buy it; and a numbered list whose first two
+items trailed commands and whose third had none, running the numbering at
+columns 41, 41 and 5.
+
+Worth recording because the report was "misalignment in rtk-install.sh" and
+measurement said the columns agreed. Both real defects were adjacent to the
+complaint rather than in it. The suggested cause -- a Nerd Font drawing glyphs
+wider than their cell -- was ruled out for these files, which are pure ASCII,
+but remains the likely explanation for ragged output elsewhere.
+
 ## Open items
 
-- **macOS validation — the main one.** Nothing here has run on macOS, where the
-  whole team is. Minimum: `./claude/scripts/rtk-install.sh --dry-run`. Better:
-  a real install followed by restoring the `.bak`, which exercises the path
-  that actually failed above.
+- **macOS validation — still the main one.** Attempted and mostly not achieved;
+  see above for exactly what remains untested and the commands that would close
+  it.
 - **`rtk init --codex` non-global / project-root `AGENTS.md`** as the ChatGPT
   desktop activation path is unverified. Probe is in `codex/EXECUTION_MODEL.md`.
 - **Pre-existing `SC2115`** in `codex/sync-to-codex.sh:14` and
